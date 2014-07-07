@@ -1,0 +1,20 @@
+Package: MBRecordToFIle
+Type: Script
+Title: Workflow to process folders containing MassBank records and parse selected information to csv file
+Version: 0.1
+Authors@R: c(
+    person(given = "Erik", family = "Muller", role =
+    "aut", email = "erik.mueller@student.uni-halle.de"), person(given =
+    "Tobias", family = "Schulze", role = "aut", email =
+    "tobias.schulze@ufz.de"), person(given = "Emma L.",
+    family = "Schymanski", email = "emma.schymanski@eawag.ch", role=c("aut")))
+Description: Work flow to process folders containing MassBank records and parse selected information to csv file.
+License: GPL v2.0
+SystemRequirements: OpenBabel
+biocViews: Bioinformatics, MassSpectrometry, Metabolomics, Software
+Depends:
+    
+Imports:
+    
+Suggests:
+    
