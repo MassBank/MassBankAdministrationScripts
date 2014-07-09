@@ -1,7 +1,9 @@
 ##Script to run the getInfo and getInfoFixKey functions with your MassBank records
-##Erik Mueller, Tobias Schulze, Emma Schymanski
-##(C) 2014
+##Authors: Erik Mueller, Tobias Schulze, Emma Schymanski
+##Copyright: (C) 2014
 ##License: GPL 2.0
+##Last edit: 7/7/14 by Tobias Schulze
+
 
 ##Set working directory
 ##setw(PathToWorkingDirectory)
@@ -15,5 +17,6 @@ getInfo("MB_all","Result_multiDirs_diffIfElse.csv")
 ##Missing InChIkey will be added by using OpenBabel
 ##OpenBabel is available here: http://openbabel.org/wiki/Main_Page
 ##The path to OpenBabel must not contain spaces.
+##This routine will run some time due to single retrival of InChIKey
 source("getInfo_and_InChIKeys.R")
 getInfoFixKey("MB_all","Result_multiDirs_diffIfElse_InChIKeys.csv","c:/OpenBabel")
