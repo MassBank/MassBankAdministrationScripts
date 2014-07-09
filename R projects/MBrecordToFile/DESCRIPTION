@@ -16,5 +16,5 @@ Depends:
     
 Imports:
     
-Suggests:
+Suggests: OpenBabel
     
