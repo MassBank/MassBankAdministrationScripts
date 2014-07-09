@@ -1,0 +1,17 @@
+Package: MBRecordToFIle
+Type: Script
+Title: Generic script to update the publication record and add a location
+Version: 
+Authors@R: c(
+    person(given = "Emma L.",
+    family = "Schymanski", email = "emma.schymanski@eawag.ch", role=c("aut")))
+Description: Generic script to update the publication record and add a location.
+License: GPL v2.0
+SystemRequirements:
+biocViews: Bioinformatics, MassSpectrometry, Metabolomics, Software
+Depends:
+    
+Imports:
+    
+Suggests:
+    
