@@ -5,8 +5,8 @@
 # get InChI Keys using Open Babel
 # need to define the directory containing Open Babel, specifically "obabel.exe"
 # This does not work if the path contains a space; the exe can be pasted anywhere
-create.inchikey <- function(smiles, babel_dir) {
-  cmd <- paste(babel_dir, "/obabel -:", smiles, " -oinchikey", sep="")
+create.inchikey <- function(SMILES, babel_dir) {
+  cmd <- paste(babel_dir, "/obabel -:", SMILES, " -oinchikey", sep="")
   res <- system(cmd, intern=TRUE, ignore.stderr=TRUE)
   return(res)
 }
@@ -15,7 +15,7 @@ create.inchikey <- function(smiles, babel_dir) {
 ##Directory is the name of the directory
 ##csvname is the designated name that the csv-file will get
 ##babel_dir is the directory path (no spaces!) containing obabel.exe
-getInfo <- function(Directory,csvname, babel_dir){
+getInfoFixKey <- function(Directory,csvname, babel_dir){
 		Files <- list.files(Directory, pattern="*.txt", full.names=TRUE, recursive=TRUE)
     #recursive=TRUE should get all sub-dirs
     #need to add pattern to skip the mols and tsvs
@@ -38,7 +38,7 @@ getInfo <- function(Directory,csvname, babel_dir){
       #fill in missing InChI Key where possible with Open Babel conversion from SMILES
       # Can only attempt this if SMILES exists; takes a while so don't recalculate unless necessary
       if((length(INCHIKEY_NA)==1)&&(length(SMILES_NA)!=1)) {
-        new_inchikey <- create.inchikey(smiles, babel_dir)
+        new_inchikey <- create.inchikey(SMILES, babel_dir)
         if(length(new_inchikey)>=1) {
           INCHIKEY <- new_inchikey
         }
