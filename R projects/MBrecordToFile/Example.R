@@ -20,3 +20,12 @@ getInfo("MB_all","Result_multiDirs_diffIfElse.csv")
 ##This routine will run some time due to single retrival of InChIKey
 source("getInfo_and_InChIKeys.R")
 getInfoFixKey("MB_all","Result_multiDirs_diffIfElse_InChIKeys.csv","c:/OpenBabel")
+
+
+##Run this script for extended extraction of information (details see getInfo_and_InChIKeys_extended.R) with InChIKey
+##Missing InChIkey will be added by using OpenBabel
+##OpenBabel is available here: http://openbabel.org/wiki/Main_Page
+##The path to OpenBabel must not contain spaces.
+##This routine will run some time due to single retrival of InChIKey
+source("getInfo_and_InChIKeys_extended.R")
+getInfoFixKey("MB_all","Result_multiDirs_diffIfElse_InChIKeys.csv","c:/OpenBabel")
