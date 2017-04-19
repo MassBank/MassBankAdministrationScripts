@@ -37,5 +37,5 @@ getInfoFixKey("MB_all","Result_multiDirs_diffIfElse_InChIKeys.csv","c:/OpenBabel
 ##This routine will run some time due to single retrival of InChIKey
 ##PEAK and PEAK annotation is not included, and not the comments
 ##
-source("C:/R_code/MassBankAdministrationScripts/R projects/MBrecordToFile/getInfo_and_InChIKeys_extended_fullrecord.R")
+source("getInfo_and_InChIKeys_extended_fullrecord.R")
 getInfoFixKey("MB_all","Result_multiDirs_diffIfElse_InChIKeys_all.csv","c:/OpenBabel")
