@@ -1,4 +1,7 @@
 ##Script by Erik Müller, Tobias Schulze, Emma Schymanski
+## Copyright: (c) 2014-2017
+## License: GPL 3.0
+
 ## Edited 7.7.14 E. Schymanski (adding InChI Key functionality)
 ## Edited 31.1.16 T. Schulze (adding parsing of more fields)
 ## note new dependence on obabel.exe

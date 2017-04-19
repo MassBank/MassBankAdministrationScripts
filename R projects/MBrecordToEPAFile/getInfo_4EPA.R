@@ -1,7 +1,8 @@
-##Script by Erik Müller, Tobias Schulze, Emma Schymanski
+## Script by Erik Müller, Tobias Schulze, Emma Schymanski
 ## To retrieve information from MassBank records and create summary CSV
 ## Modified for EPA, including some checks
 ## E. Schymanski, 5/10/2016
+## LICENSE: GPL 3.0
 
 
 # get InChI Keys using Open Babel

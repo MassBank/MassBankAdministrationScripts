@@ -1,3 +1,8 @@
+# Script to add SPLASH line to existing MassBank records
+# Erik Müller
+# Copyright (c) 2016
+# LICENSE: GPL 3.0
+
 ## Install BioCLite and the newest version of RMassBank
 biocLite("BiocInstaller")
 source("https://bioconductor.org/biocLite.R")

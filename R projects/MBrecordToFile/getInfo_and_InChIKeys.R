@@ -1,5 +1,7 @@
 ##Script by Erik Müller, Tobias Schulze, Emma Schymanski
 ## Edited 7.7.14 E. Schymanski (adding InChI Key functionality)
+## Copyright: (c) 2014-2017
+## License: GPL 3.0
 ## note new dependence on obabel.exe
 
 # get InChI Keys using Open Babel

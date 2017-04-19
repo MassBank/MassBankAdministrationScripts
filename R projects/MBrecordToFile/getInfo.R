@@ -1,5 +1,7 @@
 ##Script by Erik Müller, Tobias Schulze, Emma Schymanski
 ## To retrieve information from MassBank records and create summary CSV
+## Copyright: (c) 2014-2017
+## License: GPL 3.0
 
 ##Directory is the name of the directory
 ##csvname is the designated name that the csv-file will get

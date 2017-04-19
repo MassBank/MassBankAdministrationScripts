@@ -1,7 +1,7 @@
 ##Script to run the getInfo and getInfoFixKey functions with your MassBank records
 ##Authors: Erik Mueller, Tobias Schulze, Emma Schymanski
 ##Copyright: (C) 2014
-##License: GPL 2.0
+##License: GPL 3.0
 ##Last edit: 7/7/14 by Tobias Schulze
 
 

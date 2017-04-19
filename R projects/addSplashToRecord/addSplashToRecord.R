@@ -1,3 +1,9 @@
+# Script to add SPLASH line to existing MassBank records
+# Erik Müller
+# Copyright (c) 2016
+# LICENSE: GPL 3.0
+
+
 .addLineToRecord <- function(path, section, value, tail=TRUE){
 	
 	# If the file does not exist, stop

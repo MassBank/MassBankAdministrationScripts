@@ -1,6 +1,7 @@
 # Generic script to update the publication record and add a location
 # This script could be generalised to fixing any records if necessary.
 # E. Schymanski, 25/6/2014, generalized 7/7/14
+# LICENSE: GPL 2.0
 
 # Record path for records to be fixed:
 rec_dir <- "C:/DATA/my_rec_dir"
