@@ -1,0 +1,20 @@
+Package: MBRecordToFIle (US-EPA)
+Type: Script
+Title: Workflow to process folders containing MassBank records and parse selected information to csv file with specific checks for US-EPA
+Version: 0.2
+Authors@R: c(
+    person(given = "Erik", family = "Muller", role =
+    "aut", email = "erik.mueller@ufz.de"), person(given =
+    "Tobias", family = "Schulze", role = "aut", email =
+    "tobias.schulze@ufz.de"), person(given = "Emma L.",
+    family = "Schymanski", email = "emma.schymanski@eawag.ch", role=c("aut")))
+Description: Work flow to process folders containing MassBank records and parse selected information to csv file.
+License: GPL v3.0
+SystemRequirements: OpenBabel
+biocViews: Bioinformatics, MassSpectrometry, Metabolomics, Software
+Depends:
+    
+Imports:
+    
+Suggests: OpenBabel
+    

@@ -1,0 +1,17 @@
+Package: addSplashToRecord
+Type: Script
+Title: Script to add SPLASH line to existing MassBank records
+Version: 1.0
+Authors@R: c(
+    person(given = "Erik", family = "Muller", role =
+    "aut", email = "erik.mueller@ufz.de"))
+Description: Work flow to add the SPLASH line into existing MassBank records.
+License: GPL v3.0
+SystemRequirements: RMassBank, RMassBankData
+biocViews: Bioinformatics, MassSpectrometry, Metabolomics, Software
+Depends:
+    
+Imports:
+    
+Suggests: RMassBankData
+    
