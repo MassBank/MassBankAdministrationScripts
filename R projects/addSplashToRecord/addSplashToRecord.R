@@ -1,16 +1,15 @@
 # Script to add SPLASH line to existing MassBank records
 # Erik Müller
-# Copyright (c) 2016
+# Copyright (c) 2016-2017
 # LICENSE: GPL 3.0
 
-
-.addLineToRecord <- function(path, section, value, tail=TRUE){
+.addLineToRecord <- function(path, section, value, tail=TRUE, newDate=TRUE){
 	
 	# If the file does not exist, stop
 	if(!file.exists(path)){
 		stop("The supplied record path does not exist")
 	}
-	
+    
 	# Extract first two letters of section, in case it's "CH", "AC", "MS" or "PK"
 	# And check if the section is valid
 	secLetters <- substr(section,1,2)
@@ -28,6 +27,7 @@
 		return(0)
 	}
 	
+
 	
 	# Where to insert the new line? First try: Just search for the section name
 	# And if that exists, note the line number
@@ -76,7 +76,8 @@
 }
 
 .addSplashToRecord <- function(path){
-	require(RMassBank)
+require(RMassBank)
+require("splashR")
 	if(file.info(path[1])$isdir){
 	    Files <- list.files(path = path,
                                 recursive=TRUE, 
@@ -90,9 +91,47 @@
     sapply(Files, function(f){
         C <- capture.output(a <- parseMassBank(f))
         peaks <- a@compiled_ok[[1]][['PK$PEAK']][,c("m/z","int")]
-        .addLineToRecord(f, "PK$SPLASH", RMassBank:::getSplash(peaks), FALSE)
+        .addLineToRecord(f, "PK$SPLASH", splashR::getSplash(peaks),F,F)
         spEnv$i <- spEnv$i + 1
         setTxtProgressBar(pb, spEnv$i)
     })
 	return(1)
+}
+
+.changeRecordDate <- function(recpath){
+    
+    if(file.info(recpath[1])$isdir){
+	    Files <- list.files(path = recpath,
+                                recursive=TRUE, 
+                                full.names = TRUE)
+	} else {Files <- recpath}
+    
+    if(!file.exists(recpath)){
+        stop("The supplied record path does not exist")
+	}
+    
+    
+    sapply(Files, function(x){
+        recConn <- file(x, open="r+")
+        recLines <- readLines(recConn)
+        
+        ## Change Date:
+        Dateline <- grep("DATE:", recLines, fixed=TRUE)[1]
+        openBracket <- regexpr("(",recLines[Dateline],fixed=TRUE)
+        currentDate <- format(Sys.time(), "%Y.%m.%d")
+        if(openBracket != -1){
+            closeBracket <- regexpr(")",recLines[Dateline],fixed=TRUE)
+            inBracket <- substr(recLines[Dateline], openBracket+1,closeBracket-1)
+            oldDate <- substr(recLines[Dateline],7,openBracket-1)
+            oldDate <- gsub(" ", "", oldDate, fixed = TRUE)
+            dateLineContent <- paste("DATE:", currentDate, paste0("(",inBracket,", modified ", oldDate, ")"))
+        } else{
+            oldDate <- substr(recLines[Dateline],7,nchar(recLines[Dateline]))
+            dateLineContent <- paste("DATE:", currentDate, paste0("(Created ",oldDate,")"))
+        }
+        recLines[Dateline] <- dateLineContent
+        writeLines(recLines,recConn)
+        close(recConn)
+    })
+    return(1)
 }
