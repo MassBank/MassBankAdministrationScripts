@@ -4,7 +4,7 @@
 ## License: GPL 3.0
 ## Edited 14/7/7 E. Schymanski (adding InChI Key functionality)
 ## Edited 16/1/31 T. Schulze (adding parsing of more fields)
-## Edited 17/4/18 T. Schulze (adding parsing of more fields)
+## Edited 17/4/19 T. Schulze (adding parsing of more fields)
 ## note new dependence on obabel.exe
 
 
@@ -25,13 +25,23 @@ getInfoFixKey <- function(Directory,csvname, babel_dir){
 		Files <- list.files(Directory, pattern="*.txt", full.names=TRUE, recursive=TRUE)
     #recursive=TRUE should get all sub-dirs
     #need to add pattern to skip the mols and tsvs
-		wantedmat <- matrix(0,length(Files),(30))
+    #
+## Good to know how many files will be processed
+print(paste0("We will process ",length(Files), " Files!"))
+		
+		wantedmat <- matrix(0,length(Files),(38))
 		for(i in 1:length(Files)){
 			fileConnection <- file(normalizePath(Files[i]))
 			record <- readLines(fileConnection)
 			close(fileConnection)
       
       ## Check if fields contain NAs
+			CSIDTRUE <- grep('CH$LINK: CHEMSPIDER',record, value = TRUE, fixed = TRUE)
+			CSIDFALSE <- "N/A"
+			CASTRUE <- grep('CH$LINK: CAS',record, value = TRUE, fixed = TRUE)
+			CASFALSE <- "N/A"
+			CIDTRUE <- grep('CH$LINK: PUBCHEM',record, value = TRUE, fixed = TRUE)
+			CIDFALSE <- "N/A"
 			CSIDTRUE <- grep('CH$LINK: CHEMSPIDER',record, value = TRUE, fixed = TRUE)
 			CSIDFALSE <- "N/A"
 			INCHIKEYTRUE <- grep('CH$LINK: INCHIKEY',record, value = TRUE, fixed = TRUE)
@@ -72,6 +82,24 @@ getInfoFixKey <- function(Directory,csvname, babel_dir){
 		  SOLVENT_A_FALSE <- "N/A"
 		  SOLVENT_B_TRUE <- grep('AC$CHROMATOGRAPHY: SOLVENT B',record, value = TRUE, fixed = TRUE)
 		  SOLVENT_B_FALSE <- "N/A"
+
+		  SPLASH_TRUE <- grep('PK$SPLASH:',record, value = TRUE, fixed = TRUE)
+		  SPLASH_FALSE <- "N/A"
+		  
+		  # Collapse MS$DATA_PROCESSING
+		  processing <- list()
+		  processing <- as.list(substring(grep('MS$DATA_PROCESSING:',record, value = TRUE, fixed = TRUE),21))
+		  
+		  DATA_PROCESSING_TRUE <- paste(processing, '#', collapse = '')
+		  DATA_PROCESSING_FALSE <-"N/A"
+		  
+		  # Collapse COMMENT
+		  comments <- list()
+		  comments <- as.list(substring(grep('COMMENT:',record, value = TRUE, fixed = TRUE),10))
+		  
+		  COMMENT_TRUE <- paste(comments, '#', collapse = '')
+		  COMMENT_FALSE <-"N/A"
+
 		  
       #fill in missing InChI Key where possible with Open Babel conversion from SMILES
       # Can only attempt this if SMILES exists; takes a while so don't recalculate unless necessary
@@ -81,13 +109,17 @@ getInfoFixKey <- function(Directory,csvname, babel_dir){
           INCHIKEY <- new_inchikey
         }
       }
-
+## Good to know what R is doing
+print(paste0("In progress with #",i," of ",length(Files)," records with ACCESSION ",substring(grep('ACCESSION:',record, value = TRUE, fixed = TRUE),12),"."))
+		  
 ## Parse the fields from the records	  
-colnames(wantedmat) <- c("ACCESSION","AUTHORS","LICENSE","NAME","FORMULA","EXACT_MASS","IUPAC","INCHIKEY","SMILES","CSID","INSTRUMENT","INSTRUMENT_TYPE","MS_TYPE","IONIZATION","ION_MODE","FRAGMENTATION_MODE","COLL_E","RESOLUTION","COLUMN_NAME","FLOW_GRADIENT","FLOW_RATE","RETENTION_TIME","SOLVENT_A","SOLVENT_B","BASE_PEAK","PRECURSOR_MZ","PRECURSOR_TYPE","SPLASH","EULINK","JPLINK")
+colnames(wantedmat) <- c("ACCESSION","AUTHORS","LICENSE","DATE","COMMENT","NAME","FORMULA","EXACT_MASS","IUPAC","INCHIKEY","SMILES","CSID","CID","CAS","INSTRUMENT","INSTRUMENT_TYPE","MS_TYPE","IONIZATION","ION_MODE","FRAGMENTATION_MODE","COLL_E","COLL_E_UNIT","RESOLUTION","COLUMN_NAME","FLOW_GRADIENT","FLOW_RATE","FLOW_RATE_UNIT","RETENTION_TIME","RETENTION_TIME_UNIT","SOLVENT_A","SOLVENT_B","BASE_PEAK","PRECURSOR_MZ","PRECURSOR_TYPE","DATA_PROCESSING","SPLASH","EULINK","JPLINK")
 ## The information block
-wantedmat[i,'ACCESSION'] <- substring(grep('ACCESSION: ',record, value = TRUE, fixed = TRUE),11)
+wantedmat[i,'ACCESSION'] <- substring(grep('ACCESSION:',record, value = TRUE, fixed = TRUE),12)
 wantedmat[i,'AUTHORS'] <- substring(grep('AUTHORS:',record, value = TRUE, fixed = TRUE),10)
 wantedmat[i,'LICENSE'] <- substring(grep('LICENSE:',record, value = TRUE, fixed = TRUE),10)
+wantedmat[i,'DATE'] <- substring(grep('DATE:',record, value = TRUE, fixed = TRUE),7)
+ifelse(length(COMMENT_TRUE)==1, wantedmat[i,'COMMENT'] <- COMMENT_TRUE, wantedmat[i,'COMMENT'] <- COMMENT_FALSE)
 chnames <- list()
 chnames <- as.list(substring(grep('CH$NAME:',record, value = TRUE, fixed = TRUE),10))
 wantedmat[i,'NAME'] <- chnames[[1]]
@@ -103,6 +135,8 @@ wantedmat[i,'IUPAC'] <- substring(grep('CH$IUPAC:',record, value = TRUE, fixed =
 #INCHIKEY <- ifelse(length(INCHIKEYTRUE)==1, wantedmat[i,'INCHIKEY'] <- substring(grep('CH$LINK: INCHIKEY',record, value = TRUE, fixed = TRUE),19), wantedmat[i,'INCHIKEY'] <- INCHIKEYFALSE)
 wantedmat[i,'INCHIKEY'] <- INCHIKEY
 ifelse(length(CSIDTRUE)==1, wantedmat[i,'CSID'] <- substring(grep('CH$LINK: CHEMSPIDER',record, value = TRUE, fixed = TRUE),21), wantedmat[i,'CSID'] <- CSIDFALSE)
+ifelse(length(CIDTRUE)==1, wantedmat[i,'CID'] <- gsub("[a-z, A-Z, ,:]","", substring(grep('CH$LINK: PUBCHEM',record, value = TRUE, fixed = TRUE),17)), wantedmat[i,'CID'] <- CIDFALSE)
+ifelse(length(CASTRUE)==1, wantedmat[i,'CAS'] <- as.character(substring(grep('CH$LINK: CAS',record, value = TRUE, fixed = TRUE),14)), wantedmat[i,'CAS'] <- CASFALSE)
 
 ## The instrument block
 ifelse(length(INSTRUMENT_TRUE)==1, wantedmat[i,'INSTRUMENT'] <- substring(grep('AC$INSTRUMENT:',record, value = TRUE, fixed = TRUE),16), wantedmat[i,'INSTRUMENT'] <- INSTRUMENT_FALSE)
@@ -113,14 +147,17 @@ ifelse(length(MS_TYPE_TRUE)==1, wantedmat[i,'MS_TYPE'] <- substring(grep('AC$MAS
 ifelse(length(IONIZATION_TRUE)==1, wantedmat[i,'IONIZATION'] <- substring(grep('AC$MASS_SPECTROMETRY: IONIZATION',record, value = TRUE, fixed = TRUE),34), wantedmat[i,'IONIZATION'] <- IONIZATION_FALSE)
 wantedmat[i,'ION_MODE'] <- substring(grep('AC$MASS_SPECTROMETRY: ION_MODE',record, value = TRUE, fixed = TRUE),32)
 ifelse(length(FRAGMENTATION_MODE_TRUE)==1, wantedmat[i,'FRAGMENTATION_MODE'] <- substring(grep('AC$MASS_SPECTROMETRY: FRAGMENTATION_MODE',record, value = TRUE, fixed = TRUE),42), wantedmat[i,'FRAGMENTATION_MODE'] <- FRAGMENTATION_MODE_FALSE)
-ifelse(length(COLL_E_TRUE)==1, wantedmat[i,'COLL_E'] <- substring(grep('AC$MASS_SPECTROMETRY: COLLISION_ENERGY',record, value = TRUE, fixed = TRUE),40), wantedmat[i,'COLL_E'] <- COLL_E_FALSE)
+ifelse(length(COLL_E_TRUE)==1, wantedmat[i,'COLL_E'] <- gsub("[a-z,A-Z, ,(,),%,-]","",substring(grep('AC$MASS_SPECTROMETRY: COLLISION_ENERGY',record, value = TRUE, fixed = TRUE),40)), wantedmat[i,'COLL_E'] <- COLL_E_FALSE)
+ifelse(length(COLL_E_TRUE)==1, wantedmat[i,'COLL_E_UNIT'] <- gsub("[0-9, ,(,),.]","",substring(grep('AC$MASS_SPECTROMETRY: COLLISION_ENERGY',record, value = TRUE, fixed = TRUE),40)), wantedmat[i,'COLL_E'] <- COLL_E_FALSE)
 ifelse(length(RESOLUTION_TRUE)==1, wantedmat[i,'RESOLUTION'] <- substring(grep('AC$MASS_SPECTROMETRY: RESOLUTION',record, value = TRUE, fixed = TRUE),34), wantedmat[i,'RESOLUTION'] <- RESOLUTION_FALSE)
 
 ## The chromatography block
 ifelse(length(COLUMN_NAME_TRUE)==1, wantedmat[i,'COLUMN_NAME'] <- substring(grep('AC$CHROMATOGRAPHY: COLUMN_NAME',record, value = TRUE, fixed = TRUE),32), wantedmat[i,'COLUMN_NAME'] <- COLUMN_NAME_FALSE)
 ifelse(length(FLOW_GRADIENT_TRUE)==1, wantedmat[i,'FLOW_GRADIENT'] <- substring(grep('AC$CHROMATOGRAPHY: FLOW_GRADIENT',record, value = TRUE, fixed = TRUE),34), wantedmat[i,'FLOW_GRADIENT'] <- FLOW_GRADIENT_FALSE)
-ifelse(length(FLOW_RATE_TRUE)==1, wantedmat[i,'FLOW_RATE'] <- substring(grep('AC$CHROMATOGRAPHY: FLOW_RATE',record, value = TRUE, fixed = TRUE),30), wantedmat[i,'FLOW_RATE'] <- FLOW_RATE_FALSE)
-ifelse(length(RETENTION_TIME_TRUE)==1, wantedmat[i,'RETENTION_TIME'] <- substring(grep('AC$CHROMATOGRAPHY: RETENTION_TIME',record, value = TRUE, fixed = TRUE),35), wantedmat[i,'RETENTION_TIME'] <- RETENTION_TIME_FALSE)
+ifelse(length(FLOW_RATE_TRUE)==1, wantedmat[i,'FLOW_RATE'] <- gsub("[a-z,A-Z, ,/]", "", substring(grep('AC$CHROMATOGRAPHY: FLOW_RATE',record, value = TRUE, fixed = TRUE),30)), wantedmat[i,'FLOW_RATE'] <- FLOW_RATE_FALSE)
+ifelse(length(FLOW_RATE_TRUE)==1, wantedmat[i,'FLOW_RATE_UNIT'] <- gsub("[0-9, ,.]", "", substring(grep('AC$CHROMATOGRAPHY: FLOW_RATE',record, value = TRUE, fixed = TRUE),30)), wantedmat[i,'FLOW_RATE'] <- FLOW_RATE_FALSE)
+ifelse(length(RETENTION_TIME_TRUE)==1, wantedmat[i,'RETENTION_TIME'] <- gsub("[a-z,A-Z, ]", "", substring(grep('AC$CHROMATOGRAPHY: RETENTION_TIME',record, value = TRUE, fixed = TRUE),35)), wantedmat[i,'RETENTION_TIME'] <- RETENTION_TIME_FALSE)
+ifelse(length(RETENTION_TIME_TRUE)==1, wantedmat[i,'RETENTION_TIME_UNIT'] <- gsub("[0-9, ,.]","", substring(grep('AC$CHROMATOGRAPHY: RETENTION_TIME',record, value = TRUE, fixed = TRUE),35)), wantedmat[i,'RETENTION_TIME'] <- RETENTION_TIME_FALSE)
 ifelse(length(SOLVENT_A_TRUE)==1, wantedmat[i,'SOLVENT_A'] <- substring(grep('AC$CHROMATOGRAPHY: SOLVENT A',record, value = TRUE, fixed = TRUE),30), wantedmat[i,'SOLVENT_A'] <- SOLVENT_A_FALSE)
 ifelse(length(SOLVENT_B_TRUE)==1, wantedmat[i,'SOLVENT_B'] <- substring(grep('AC$CHROMATOGRAPHY: SOLVENT B',record, value = TRUE, fixed = TRUE),30), wantedmat[i,'SOLVENT_B'] <- SOLVENT_A_FALSE)
 
@@ -128,11 +165,19 @@ ifelse(length(SOLVENT_B_TRUE)==1, wantedmat[i,'SOLVENT_B'] <- substring(grep('AC
 ifelse(length(BASE_PEAK_TRUE)==1, wantedmat[i,'BASE_PEAK'] <- substring(grep('MS$FOCUSED_ION: BASE_PEAK ',record, value = TRUE, fixed = TRUE),26), wantedmat[i,'BASE_PEAK'] <- BASE_PEAK_FALSE)
 ifelse(length(PRECURSOR_MZ_TRUE)==1, wantedmat[i,'PRECURSOR_MZ'] <- substring(grep('MS$FOCUSED_ION: PRECURSOR_M/Z ',record, value = TRUE, fixed = TRUE),30), wantedmat[i,'PRECURSOR_MZ'] <- PRECURSOR_MZ_FALSE)
 ifelse(length(PRECURSOR_TYPE_TRUE)==1, wantedmat[i,'PRECURSOR_TYPE'] <- substring(grep('MS$FOCUSED_ION: PRECURSOR_TYPE ',record, value = TRUE, fixed = TRUE),31), wantedmat[i,'PRECURSOR_TYPE'] <- PRECURSOR_TYPE_FALSE)
-wantedmat[i,'SPLASH'] <- substring(grep('PK$SPLASH:',record, value = TRUE, fixed = TRUE),12)
+ifelse(length(DATA_PROCESSING_TRUE)==1, wantedmat[i,'DATA_PROCESSING'] <- DATA_PROCESSING_TRUE, wantedmat[i,'DATA_PROCESSING'] <- DATA_PROCESSING_FALSE)
+
+
+# The Peak block
+ifelse(length(SPLASH_TRUE)==1, wantedmat[i,'SPLASH'] <- substring(grep('PK$SPLASH:',record, value = TRUE, fixed = TRUE),12), wantedmat[i,'SPLASH'] <- SPLASH_FALSE)
+
+
+# wantedmat[i,'SPLASH'] <- substring(grep('PK$SPLASH:',record, value = TRUE, fixed = TRUE),12)
 
 ## The deep links
 wantedmat[i,'EULINK'] <- paste("http://massbank.eu/MassBank/jsp/FwdRecord.jsp?id=", substring(grep('ACCESSION:',record, value = TRUE, fixed = TRUE),12), sep="")
 wantedmat[i,'JPLINK'] <- paste("http://www.massbank.jp/jsp/FwdRecord.jsp?id=", substring(grep('ACCESSION:',record, value = TRUE, fixed = TRUE),12), sep="")
+print(wantedmat[i,c('ACCESSION','SPLASH')])
 }
 
 ## Write the csv file
