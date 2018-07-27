@@ -148,16 +148,16 @@ ifelse(length(IONIZATION_TRUE)==1, wantedmat[i,'IONIZATION'] <- substring(grep('
 wantedmat[i,'ION_MODE'] <- substring(grep('AC$MASS_SPECTROMETRY: ION_MODE',record, value = TRUE, fixed = TRUE),32)
 ifelse(length(FRAGMENTATION_MODE_TRUE)==1, wantedmat[i,'FRAGMENTATION_MODE'] <- substring(grep('AC$MASS_SPECTROMETRY: FRAGMENTATION_MODE',record, value = TRUE, fixed = TRUE),42), wantedmat[i,'FRAGMENTATION_MODE'] <- FRAGMENTATION_MODE_FALSE)
 ifelse(length(COLL_E_TRUE)==1, wantedmat[i,'COLL_E'] <- gsub("[a-z,A-Z, ,(,),%,-]","",substring(grep('AC$MASS_SPECTROMETRY: COLLISION_ENERGY',record, value = TRUE, fixed = TRUE),40)), wantedmat[i,'COLL_E'] <- COLL_E_FALSE)
-ifelse(length(COLL_E_TRUE)==1, wantedmat[i,'COLL_E_UNIT'] <- gsub("[0-9, ,(,),.]","",substring(grep('AC$MASS_SPECTROMETRY: COLLISION_ENERGY',record, value = TRUE, fixed = TRUE),40)), wantedmat[i,'COLL_E'] <- COLL_E_FALSE)
+ifelse(length(COLL_E_TRUE)==1, wantedmat[i,'COLL_E_UNIT'] <- gsub("[0-9, ,(,),.]","",substring(grep('AC$MASS_SPECTROMETRY: COLLISION_ENERGY',record, value = TRUE, fixed = TRUE),40)), wantedmat[i,'COLL_E_UNIT'] <- COLL_E_FALSE)
 ifelse(length(RESOLUTION_TRUE)==1, wantedmat[i,'RESOLUTION'] <- substring(grep('AC$MASS_SPECTROMETRY: RESOLUTION',record, value = TRUE, fixed = TRUE),34), wantedmat[i,'RESOLUTION'] <- RESOLUTION_FALSE)
 
 ## The chromatography block
 ifelse(length(COLUMN_NAME_TRUE)==1, wantedmat[i,'COLUMN_NAME'] <- substring(grep('AC$CHROMATOGRAPHY: COLUMN_NAME',record, value = TRUE, fixed = TRUE),32), wantedmat[i,'COLUMN_NAME'] <- COLUMN_NAME_FALSE)
 ifelse(length(FLOW_GRADIENT_TRUE)==1, wantedmat[i,'FLOW_GRADIENT'] <- substring(grep('AC$CHROMATOGRAPHY: FLOW_GRADIENT',record, value = TRUE, fixed = TRUE),34), wantedmat[i,'FLOW_GRADIENT'] <- FLOW_GRADIENT_FALSE)
 ifelse(length(FLOW_RATE_TRUE)==1, wantedmat[i,'FLOW_RATE'] <- gsub("[a-z,A-Z, ,/]", "", substring(grep('AC$CHROMATOGRAPHY: FLOW_RATE',record, value = TRUE, fixed = TRUE),30)), wantedmat[i,'FLOW_RATE'] <- FLOW_RATE_FALSE)
-ifelse(length(FLOW_RATE_TRUE)==1, wantedmat[i,'FLOW_RATE_UNIT'] <- gsub("[0-9, ,.]", "", substring(grep('AC$CHROMATOGRAPHY: FLOW_RATE',record, value = TRUE, fixed = TRUE),30)), wantedmat[i,'FLOW_RATE'] <- FLOW_RATE_FALSE)
+ifelse(length(FLOW_RATE_TRUE)==1, wantedmat[i,'FLOW_RATE_UNIT'] <- gsub("[0-9, ,.]", "", substring(grep('AC$CHROMATOGRAPHY: FLOW_RATE',record, value = TRUE, fixed = TRUE),30)), wantedmat[i,'FLOW_RATE_UNIT'] <- FLOW_RATE_FALSE)
 ifelse(length(RETENTION_TIME_TRUE)==1, wantedmat[i,'RETENTION_TIME'] <- gsub("[a-z,A-Z, ]", "", substring(grep('AC$CHROMATOGRAPHY: RETENTION_TIME',record, value = TRUE, fixed = TRUE),35)), wantedmat[i,'RETENTION_TIME'] <- RETENTION_TIME_FALSE)
-ifelse(length(RETENTION_TIME_TRUE)==1, wantedmat[i,'RETENTION_TIME_UNIT'] <- gsub("[0-9, ,.]","", substring(grep('AC$CHROMATOGRAPHY: RETENTION_TIME',record, value = TRUE, fixed = TRUE),35)), wantedmat[i,'RETENTION_TIME'] <- RETENTION_TIME_FALSE)
+ifelse(length(RETENTION_TIME_TRUE)==1, wantedmat[i,'RETENTION_TIME_UNIT'] <- gsub("[0-9, ,.]","", substring(grep('AC$CHROMATOGRAPHY: RETENTION_TIME',record, value = TRUE, fixed = TRUE),35)), wantedmat[i,'RETENTION_TIME_UNIT'] <- RETENTION_TIME_FALSE)
 ifelse(length(SOLVENT_A_TRUE)==1, wantedmat[i,'SOLVENT_A'] <- substring(grep('AC$CHROMATOGRAPHY: SOLVENT A',record, value = TRUE, fixed = TRUE),30), wantedmat[i,'SOLVENT_A'] <- SOLVENT_A_FALSE)
 ifelse(length(SOLVENT_B_TRUE)==1, wantedmat[i,'SOLVENT_B'] <- substring(grep('AC$CHROMATOGRAPHY: SOLVENT B',record, value = TRUE, fixed = TRUE),30), wantedmat[i,'SOLVENT_B'] <- SOLVENT_A_FALSE)
 
